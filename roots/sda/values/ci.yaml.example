@@ -5,9 +5,9 @@ OperationsCenter:
   Ingress:
     Class: alb
     Annotations:
-      alb.ingress.kubernetes.io/inbound-cidrs: 0.0.0.0/0
+      alb.ingress.kubernetes.io/inbound-cidrs: 0.0.0.0/32
       alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/tags: "key1=value1,key2=value2"
+      alb.ingress.kubernetes.io/tags: "cb-owner=devops-consultants,cb-user=mgangwal,cb-environment=demo"
       alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true
       alb.ingress.kubernetes.io/target-type: ip
   CasC:
@@ -15,9 +15,21 @@ OperationsCenter:
     Retriever:
       Enabled: true
       ocBundleAutomaticVersion: true
-      scmRepo: https://github.com/ryecarrigan/oc-casc-bundle.git
+      scmRepo: https://github.com/Gangwal-Mayank/oc-casc-bundle.git
       scmBranch: main
       scmBundlePath: /cjoc
+
+  ContainerEnv:
+    - name: SECRETS
+      value: /var/run/secrets/cjoc
+  ExtraVolumes:
+    - name: oc-secrets
+      secret:
+        defaultMode: 0400
+        secretName: oc-secrets
+  ExtraVolumeMounts:
+    - name: oc-secrets
+      mountPath: /var/run/secrets/cjoc
 
   NodeSelector:
     jenkins: controller
